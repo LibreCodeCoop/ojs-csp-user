@@ -63,6 +63,7 @@ class CspUserPlugin extends GenericPlugin
         $fields[] = 'estado';
         $fields[] = 'cep';
         $fields[] = 'pais';
+        $fields[] = 'palavraChave';
 
         return false;
     }

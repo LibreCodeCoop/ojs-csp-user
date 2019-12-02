@@ -13,11 +13,6 @@ class CspUserPlugin extends GenericPlugin
             return true;
         if ($success && $this->getEnabled($mainContextId)) {
             HookRegistry::register('userdao::getAdditionalFieldNames', array($this, 'handleAdditionalFieldNames'));
-            HookRegistry::register('User::getProperties::summaryProperties', array(
-                $this,
-                'getSummaryProperties'
-            ));
-            // Do something when the plugin is enabled
         }
 
         return $success;
@@ -31,7 +26,7 @@ class CspUserPlugin extends GenericPlugin
      */
     public function getDisplayName()
     {
-        return 'LyseonTech Users';
+        return __('plugins.generic.cspUser.displayName');
     }
 
     /**
@@ -42,12 +37,7 @@ class CspUserPlugin extends GenericPlugin
      */
     public function getDescription()
     {
-        return 'Return extended user settings when get user properties.';
-    }
-
-    function getSummaryProperties($hookName, $params)
-    {
-        return false;
+        return __('plugins.generic.cspUser.description');
     }
 
     public function handleAdditionalFieldNames($hookName, $params) {

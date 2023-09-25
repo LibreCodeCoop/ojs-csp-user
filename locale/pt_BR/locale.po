@@ -14,3 +14,24 @@ msgstr "Usuários CSP"
 
 msgid "plugins.generic.cspUser.description"
 msgstr "Adiciona campos customizados do CSP ao usuário."
+
+msgid "plugins.themes.csp.user.gender"
+msgstr "Com qual gênero você se identifica?"
+
+msgid "plugins.themes.csp.user.gender.male"
+msgstr "Masculino"
+
+msgid "plugins.themes.csp.user.gender.female"
+msgstr "Feminino"
+
+msgid "plugins.themes.csp.user.gender.non-binary"
+msgstr "Não binário"
+
+msgid "plugins.themes.csp.user.gender.not.inform"
+msgstr "Prefiro não informar"
+
+msgid "plugins.themes.csp.user.region"
+msgstr "Estado"
+
+msgid "plugins.themes.csp.user.zip.code"
+msgstr "Código Postal"

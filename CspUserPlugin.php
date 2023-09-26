@@ -10,7 +10,7 @@
  * @brief Customizes User profile fields
  */
 
- namespace APP\plugins\generic\cspUser;
+namespace APP\plugins\generic\cspUser;
 
 use PKP\plugins\GenericPlugin;
 use APP\core\Application;
@@ -31,9 +31,10 @@ class CspUserPlugin extends GenericPlugin {
      */
     public function register($category, $path, $mainContextId = null)
     {
-        $success = parent::register($category, $path);
+        $success = parent::register($category, $path, $mainContextId);
         if ($success && $this->getEnabled()) {
             xdebug_break();
+
             Hook::add('Schema::get::user', [$this, 'addToUserSchema']);
 
             Hook::add('registrationform::readuservars', [$this, 'registrationFormReadUserVars']);
@@ -119,7 +120,7 @@ class CspUserPlugin extends GenericPlugin {
 	public function registrationFormConstructor(string $hookName, array $args)
 	{
 		$form =& $args[0];
-        $form->addCheck(new \PKP\form\validation\FormValidatorORCID($form, 'orcid', 'requires', 'user.orcid.orcidInvalid'));
+        $form->addCheck(new \PKP\form\validation\FormValidatorORCID($form, 'orcid', 'required', 'user.orcid.orcidInvalid'));
 	}
 
     public function registrationFormDisplay(string $hookName, array $args){

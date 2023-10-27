@@ -33,7 +33,7 @@ class CspUserPlugin extends GenericPlugin {
     {
         $success = parent::register($category, $path, $mainContextId);
         if ($success && $this->getEnabled()) {
-            xdebug_break();
+
 
             Hook::add('Schema::get::user', [$this, 'addToUserSchema']);
 

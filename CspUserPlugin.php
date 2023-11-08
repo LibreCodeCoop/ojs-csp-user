@@ -20,6 +20,8 @@ use APP\facades\Repo;
 use PKP\security\Role;
 use PKP\user\form\RegistrationForm;
 use PKP\user\form\IdentityForm;
+use PKP\services\PKPSchemaService;
+use APP\core\Services;
 
 class CspUserPlugin extends GenericPlugin {
 
@@ -34,8 +36,8 @@ class CspUserPlugin extends GenericPlugin {
         $success = parent::register($category, $path, $mainContextId);
         if ($success && $this->getEnabled()) {
 
-
             Hook::add('Schema::get::user', [$this, 'addToUserSchema']);
+            Services::get('schema')->get(PKPSchemaService::SCHEMA_USER, true);
 
             Hook::add('registrationform::readuservars', [$this, 'registrationFormReadUserVars']);
             Hook::add('registrationform::Constructor', [$this, 'registrationFormConstructor']);
@@ -85,6 +87,7 @@ class CspUserPlugin extends GenericPlugin {
         $schema->properties->gender = (object) [
             'type' => 'string',
             'multilingual' => false,
+            "apiSummary" => true,
             'validation' => ['nullable']
         ];
 
@@ -98,18 +101,21 @@ class CspUserPlugin extends GenericPlugin {
         $schema->properties->city = (object) [
             'type' => 'string',
             'multilingual' => false,
+            "apiSummary" => true,
             'validation' => ['nullable']
         ];
 
         $schema->properties->region = (object) [
             'type' => 'string',
             'multilingual' => false,
+            "apiSummary" => true,
             'validation' => ['nullable']
         ];
 
         $schema->properties->zipCode = (object) [
             'type' => 'string',
             'multilingual' => false,
+            "apiSummary" => true,
             'validation' => ['nullable']
         ];
 
@@ -171,16 +177,18 @@ class CspUserPlugin extends GenericPlugin {
 
 
 	public function contactFormDisplay(string $hookName, array $args){
-		$args[0]->_data["affiliation2"] = $args[0]->_user->_data["affiliation2"];
-		$args[0]->_data["city"] = $args[0]->_user->_data["city"];
-		$args[0]->_data["state"] = $args[0]->_user->_data["state"];
-		$args[0]->_data["zipCode"] = $args[0]->_user->_data["zipCode"];
+        $user = Repo::user()->get($args[0]->_user->getData('id'), true);
+
+		$args[0]->_data["affiliation2"] = $user->getData('affiliation2');
+		$args[0]->_data["city"] = $user->getData('city');
+		$args[0]->_data["region"] = $user->getData('region');
+		$args[0]->_data["zipCode"] = $user->getData('zipCode');
 	}
 
 	public function contactFormReaduservars(string $hookName, array $args){
 		$args[1][] = 'affiliation2';
 		$args[1][] = 'city';
-		$args[1][] = 'state';
+		$args[1][] = 'region';
 		$args[1][] = 'zipCode';
 	}
 
@@ -190,8 +198,10 @@ class CspUserPlugin extends GenericPlugin {
 		$editUser = $form->_user;
 		$editUser->setData('affiliation2', $form->getData('affiliation2'));
 		$editUser->setData('city', $form->getData('city'));
-		$editUser->setData('state', $form->getData('state'));
+		$editUser->setData('region', $form->getData('region'));
 		$editUser->setData('zipCode', $form->getData('zipCode'));
+        $user = Repo::user()->get($args[0]->_user->getData('id'), true);
+        $editUser->setData('gender', $user->getData('gender'));
 	}
 
 	public function identityFormDisplay(string $hookName, array $args){
@@ -203,9 +213,10 @@ class CspUserPlugin extends GenericPlugin {
         $genders['NB'] = __('plugins.themes.csp.user.gender.non-binary');
         $genders['NI'] = __('plugins.themes.csp.user.gender.not.inform');
 
+        $user = Repo::user()->get($args[0]->_user->getData('id'), true);
         $templateMgr->assign([
             'genders' => $genders,
-            'gender' => 'F',
+            'gender' => $user->getData('gender'),
         ]);
 	}
 
@@ -219,6 +230,11 @@ class CspUserPlugin extends GenericPlugin {
 
 		$editUser = $form->_user;
 		$editUser->setData('gender', $form->getData('gender'));
+        $user = Repo::user()->get($args[0]->_user->getData('id'), true);
+		$editUser->setData('affiliation2', $user->getData('affiliation2'));
+		$editUser->setData('city', $user->getData('city'));
+		$editUser->setData('region', $user->getData('region'));
+		$editUser->setData('zipCode', $user->getData('zipCode'));
 	}
 
 }

@@ -29,8 +29,8 @@
 	{fbvFormSection title="user.affiliation" size=$fbvStyles.size.LARGE required=true}
 		{fbvElement type="text" name="affiliation" id="affiliation" value=$affiliation multilingual="true" required="true"}
 	{/fbvFormSection}
-	{fbvFormSection title="user.affiliation" size=$fbvStyles.size.LARGE required=true}
-		{fbvElement type="text" name="affiliation2" id="affiliation2" value=$affiliation2 required="true"}
+	{fbvFormSection title="user.affiliation" size=$fbvStyles.size.LARGE required=false}
+		{fbvElement type="text" name="affiliation2" id="affiliation2" value=$affiliation2 required=false}
 	{/fbvFormSection}
 	{fbvFormSection title="common.mailingAddress" size=$fbvStyles.size.LARGE required=true}
 		{fbvElement type="text" name="mailingAddress" id="mailingAddress" rich=true value=$mailingAddress required="true"}
@@ -39,10 +39,10 @@
 		{fbvElement type="text" name="city" id="city" rich=true value=$city required="true"}
 	{/fbvFormSection}
 	{fbvFormSection title="plugins.themes.csp.user.region" size=$fbvStyles.size.LARGE required=false}
-		{fbvElement type="text" name="state" id="state" rich=true value=$state required="false"}
+		{fbvElement type="text" name="state" id="state" rich=true value=$state required=false}
 	{/fbvFormSection}
 	{fbvFormSection title="plugins.themes.csp.user.zip.code" size=$fbvStyles.size.LARGE required=false}
-		{fbvElement type="text" name="zipCode" id="zipCode" rich=true value=$zipCode required="false"}
+		{fbvElement type="text" name="zipCode" id="zipCode" rich=true value=$zipCode required=false}
 	{/fbvFormSection}
 	{fbvFormSection title="common.country" size=$fbvStyles.size.LARGE required=true}
 		{fbvElement type="select" name="country" id="country" required=true defaultLabel="" defaultValue="" from=$countries selected=$country translate=false}

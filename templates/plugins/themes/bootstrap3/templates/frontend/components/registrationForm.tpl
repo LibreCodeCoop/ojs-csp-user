@@ -67,7 +67,7 @@
 				{translate key="user.affiliation"}
 				<span class="form-control-required">*</span>
 				<span class="sr-only">{translate key="common.required"}</span>
-				<input class="form-control" type="text" name="affiliation" id="affiliation" value="{$affiliation.$primaryLocale|escape}" required>
+				<input class="form-control" type="text" name="affiliation" autocomplete="organization" id="affiliation" value="{$affiliation|default:""|escape}" required aria-required="true">
 			</label>
 		</div>
 		<div class="form-group affiliation2">

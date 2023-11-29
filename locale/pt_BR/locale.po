@@ -35,3 +35,21 @@ msgstr "Estado"
 
 msgid "plugins.themes.csp.user.zip.code"
 msgstr "Código Postal"
+
+msgid "plugins.themes.csp.user.breed"
+msgstr "Com qual raça/cor você se identifica?"
+
+msgid "plugins.themes.csp.user.breed.amarela"
+msgstr "Amarela"
+
+msgid "plugins.themes.csp.user.breed.branca"
+msgstr "Branca"
+
+msgid "plugins.themes.csp.user.breed.indigena"
+msgstr "Indígena"
+
+msgid "plugins.themes.csp.user.breed.parda"
+msgstr "Parda"
+
+msgid "plugins.themes.csp.user.breed.preta"
+msgstr "Preta"

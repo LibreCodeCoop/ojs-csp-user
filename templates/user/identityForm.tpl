@@ -39,9 +39,10 @@
 	{/fbvFormArea}
 	{fbvFormSection title="plugins.themes.csp.user.gender" size=$fbvStyles.size.LARGE required=true}
 		{fbvElement type="select" name="gender" id="gender" required=true defaultLabel="" defaultValue="" from=$genders selected=$gender translate=false}
-		
 	{/fbvFormSection}
-
+	{fbvFormSection title="plugins.themes.csp.user.breed" size=$fbvStyles.size.LARGE required=true}
+		{fbvElement type="select" name="breed" id="breed" required=true defaultLabel="" defaultValue="" from=$breeds selected=$breed translate=false}
+	{/fbvFormSection}
 	<p>
 		{capture assign="privacyUrl"}{url router=\PKP\core\PKPApplication::ROUTE_PAGE page="about" op="privacy"}{/capture}
 		{translate key="user.privacyLink" privacyUrl=$privacyUrl}

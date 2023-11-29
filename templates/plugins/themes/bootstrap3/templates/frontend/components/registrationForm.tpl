@@ -48,6 +48,19 @@
 				</select>
 			</label>
 		</div>
+		<div class="form-group breed">
+			<label>
+				<div id="fr">
+					{translate key="plugins.themes.csp.user.breed"}
+					<span class="form-control-required">*</span>
+					<span class="sr-only">{translate key="common.required"}</span>
+				</div>
+				<select name="breed" id="breed" class="form-control" required>
+					<option value="">{translate key="common.chooseOne"}</option>
+					{html_options options=$breeds selected=$breed}
+				</select>
+			</label>
+		</div>
 		<div class="form-group">
 			<label>
 				{translate key="user.orcid"}

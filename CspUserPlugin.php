@@ -91,6 +91,13 @@ class CspUserPlugin extends GenericPlugin {
             'validation' => ['nullable']
         ];
 
+        $schema->properties->breed = (object) [
+            'type' => 'string',
+            'multilingual' => false,
+            "apiSummary" => true,
+            'validation' => ['nullable']
+        ];
+
         $schema->properties->affiliation2 = (object) [
             "type" => "string",
             "multilingual" => false,
@@ -138,13 +145,21 @@ class CspUserPlugin extends GenericPlugin {
         $genders['NB'] = __('plugins.themes.csp.user.gender.non-binary');
         $genders['NI'] = __('plugins.themes.csp.user.gender.not.inform');
 
+        $breeds['amarela'] = __('plugins.themes.csp.user.breed.amarela');
+        $breeds['branca'] = __('plugins.themes.csp.user.breed.branca');
+        $breeds['indigena'] = __('plugins.themes.csp.user.breed.indigena');
+        $breeds['parda'] = __('plugins.themes.csp.user.breed.parda');
+        $breeds['preta'] = __('plugins.themes.csp.user.breed.preta');
+
 		$templateMgr->assign('genders', $genders);
+        $templateMgr->assign('breeds', $breeds);
     }
 
 	public function registrationformReadUserVars(string $hookName, array $args)
 	{
 		$args[1][] = 'url';
 		$args[1][] = 'gender';
+        $args[1][] = 'breed';
 		$args[1][] = 'affiliation2';
 		$args[1][] = 'mailingAddress';
 		$args[1][] = 'city';
@@ -161,6 +176,7 @@ class CspUserPlugin extends GenericPlugin {
 		$newUser = $form->user;
 		$newUser->setData('url', $form->getData('url'));
 		$newUser->setData('gender', $form->getData('gender'));
+        $newUser->setData('breed', $form->getData('breed'));
 		$newUser->setData('affiliation2', $form->getData('affiliation2'));
 		$newUser->setData('mailingAddress', $form->getData('mailingAddress'));
 		$newUser->setData('city', $form->getData('city'));
@@ -202,26 +218,37 @@ class CspUserPlugin extends GenericPlugin {
 		$editUser->setData('zipCode', $form->getData('zipCode'));
         $user = Repo::user()->get($args[0]->_user->getData('id'), true);
         $editUser->setData('gender', $user->getData('gender'));
+        $editUser->setData('breed', $user->getData('breed'));
 	}
 
 	public function identityFormDisplay(string $hookName, array $args){
         $form = &$args[0];
         $request = Application::get()->getRequest();
         $templateMgr = TemplateManager::getManager($request);
+
         $genders['M'] = __('plugins.themes.csp.user.gender.male');
         $genders['F'] = __('plugins.themes.csp.user.gender.female');
         $genders['NB'] = __('plugins.themes.csp.user.gender.non-binary');
         $genders['NI'] = __('plugins.themes.csp.user.gender.not.inform');
 
+        $breeds['amarela'] = __('plugins.themes.csp.user.breed.amarela');
+        $breeds['branca'] = __('plugins.themes.csp.user.breed.branca');
+        $breeds['indigena'] = __('plugins.themes.csp.user.breed.indigena');
+        $breeds['parda'] = __('plugins.themes.csp.user.breed.parda');
+        $breeds['preta'] = __('plugins.themes.csp.user.breed.preta');
+
         $user = Repo::user()->get($args[0]->_user->getData('id'), true);
         $templateMgr->assign([
             'genders' => $genders,
             'gender' => $user->getData('gender'),
+            'breeds' => $breeds,
+            'breed' => $user->getData('breed'),
         ]);
 	}
 
 	public function identityFormReaduservars(string $hookName, array $args){
 		$args[1][] = 'gender';
+        $args[1][] = 'breed';
 	}
 
 	public function identityFormExecute(string $hookName, array $args)
@@ -230,6 +257,7 @@ class CspUserPlugin extends GenericPlugin {
 
 		$editUser = $form->_user;
 		$editUser->setData('gender', $form->getData('gender'));
+        $editUser->setData('breed', $form->getData('breed'));
         $user = Repo::user()->get($args[0]->_user->getData('id'), true);
 		$editUser->setData('affiliation2', $user->getData('affiliation2'));
 		$editUser->setData('city', $user->getData('city'));

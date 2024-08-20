@@ -22,6 +22,11 @@ use PKP\user\form\RegistrationForm;
 use PKP\user\form\IdentityForm;
 use PKP\services\PKPSchemaService;
 use APP\core\Services;
+use PKP\core\Core;
+use PKP\security\Validation;
+use PKP\session\SessionManager;
+use Illuminate\Support\Facades\DB;
+use PKP\facades\Locale;
 
 class CspUserPlugin extends GenericPlugin {
 
@@ -53,6 +58,7 @@ class CspUserPlugin extends GenericPlugin {
             Hook::add('identityform::execute', array($this, 'identityFormExecute'));
 
             Hook::add('TemplateResource::getFilename', [$this, '_overridePluginTemplates']);
+            Hook::add('LoadHandler', [$this, 'loadHandler']);
         }
 
         return $success;
@@ -264,5 +270,80 @@ class CspUserPlugin extends GenericPlugin {
 		$editUser->setData('region', $user->getData('region'));
 		$editUser->setData('zipCode', $user->getData('zipCode'));
 	}
+
+    // Integração de login Sagas com OJS
+    public function loadHandler($hookName, $args){
+        if( $args[0] == "login" && $args[1] == "signIn"){
+            $request = Application::get()->getRequest();
+            $row = DB::table('csp.Login as l')
+            ->leftJoin('ojs.users as ou', 'ou.username', '=', 'l.login')
+            ->join('csp.Pessoa as p', 'l.idPessoaFK', '=', 'p.idPessoa')
+            ->where('login','=', $request->getUserVar('username'))
+            ->where('l.senha', '=', sha1($request->getUserVar('password')))
+            ->whereNull('ou.user_id')
+            ->get([
+                'login AS username',
+                'p.email',
+                'p.telefone AS phone',
+                'p.pais AS country',
+                'p.orcid AS orcid',
+                'p.nome AS givenName',
+                'p.idioma',
+                'p.lattes',
+                'p.sexo',
+                'p.observacao',
+                'p.instituicao1',
+                'p.instituicao2',
+                'p.endereco',
+                'p.cidade',
+                'p.estado',
+                'p.cep'
+            ])
+            ->first();
+
+            if($row){
+                $user = Repo::user()->newDataObject();
+                $currentLocale = Locale::getLocale();
+
+                $user->setUsername($row->username);
+
+                $user->setGivenName($row->givenName, $currentLocale);
+                $user->setEmail($row->email);
+                $user->setCountry($row->country);
+                $user->setAffiliation($row->instituicao1, $currentLocale);
+
+                $site = $request->getSite();
+                $sitePrimaryLocale = $site->getPrimaryLocale();
+
+                if ($sitePrimaryLocale != $currentLocale) {
+                    $user->setGivenName($row->givenName, $sitePrimaryLocale);
+                    $user->setAffiliation($row->instituicao1, $sitePrimaryLocale);
+                }
+                $user->setDateRegistered(Core::getCurrentDate());
+                $user->setInlineHelp(1); // default new users to having inline help visible.
+                $user->setPassword(Validation::encryptCredentials($row->username, $request->_requestVars["password"]));
+
+                Repo::user()->add($user);
+                $userId = $user->getId();
+                if (!$userId) {
+                    return false;
+                }
+                // Associate the new user with the existing session
+                $sessionManager = SessionManager::getManager();
+                $session = $sessionManager->getUserSession();
+                $session->setSessionVar('username', $user->getUsername());
+
+                $defaultReaderGroup = Repo::userGroup()->getByRoleIds([Role::ROLE_ID_READER], $request->getContext()->getId(), true)->first();
+                $reviewerGroup = Repo::userGroup()->getByRoleIds([Role::ROLE_ID_REVIEWER], $request->getContext()->getId(), true)->first();
+                Repo::userGroup()->assignUserToGroup($user->getId(), $defaultReaderGroup->getId(), $request->getContext()->getId());
+                Repo::userGroup()->assignUserToGroup($user->getId(), $reviewerGroup->getId(), $request->getContext()->getId());
+
+                $basePath = $request->getBasePath();
+                $contextPath = $request->getContext()->getPath();
+                $basePath = $request->getBasePath();
+                $request->_requestVars["source"] = $basePath.'/index.php/'.$contextPath."/user/profile";
+            }
+        }
+    }
 
 }

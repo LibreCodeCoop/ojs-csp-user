@@ -18,8 +18,6 @@ use PKP\plugins\Hook;
 use APP\template\TemplateManager;
 use APP\facades\Repo;
 use PKP\security\Role;
-use PKP\user\form\RegistrationForm;
-use PKP\user\form\IdentityForm;
 use PKP\services\PKPSchemaService;
 use APP\core\Services;
 use PKP\core\Core;

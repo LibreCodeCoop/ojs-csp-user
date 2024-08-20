@@ -271,15 +271,10 @@ class CspUserPlugin extends GenericPlugin {
 
     // Integração de login Sagas com OJS
     public function loadHandler($hookName, $args){
-        if( $args[0] == "login" && $args[1] == "signIn"){
+        if( $args[0] == "login" && ($args[1] == "signIn" or $args[1] == "requestResetPassword")){
             $request = Application::get()->getRequest();
-            $row = DB::table('csp.Login as l')
-            ->leftJoin('ojs.users as ou', 'ou.username', '=', 'l.login')
-            ->join('csp.Pessoa as p', 'l.idPessoaFK', '=', 'p.idPessoa')
-            ->where('login','=', $request->getUserVar('username'))
-            ->where('l.senha', '=', sha1($request->getUserVar('password')))
-            ->whereNull('ou.user_id')
-            ->get([
+            $results = DB::table('csp.Login as l')
+            ->select(
                 'login AS username',
                 'p.email',
                 'p.telefone AS phone',
@@ -296,31 +291,37 @@ class CspUserPlugin extends GenericPlugin {
                 'p.cidade',
                 'p.estado',
                 'p.cep'
-            ])
-            ->first();
+            )
+            ->leftJoin('ojs.users as ou', 'ou.username', '=', 'l.login')
+            ->join('csp.Pessoa as p', 'l.idPessoaFK', '=', 'p.idPessoa');
+            if ($args[1] == "signIn") {
+                $results->where('login','=', $request->getUserVar('username'));
+                $results->where('l.senha', '=', sha1($request->getUserVar('password')));
+            }
+            if($args[1] == "requestResetPassword"){
+                $results->where('p.email','=', $request->getUserVar('email'));
+            }
+            $results->whereNull('ou.user_id');
+            $row = $results->first();
 
             if($row){
                 $user = Repo::user()->newDataObject();
                 $currentLocale = Locale::getLocale();
-
                 $user->setUsername($row->username);
-
                 $user->setGivenName($row->givenName, $currentLocale);
                 $user->setEmail($row->email);
                 $user->setCountry($row->country);
                 $user->setAffiliation($row->instituicao1, $currentLocale);
-
                 $site = $request->getSite();
                 $sitePrimaryLocale = $site->getPrimaryLocale();
-
                 if ($sitePrimaryLocale != $currentLocale) {
                     $user->setGivenName($row->givenName, $sitePrimaryLocale);
                     $user->setAffiliation($row->instituicao1, $sitePrimaryLocale);
                 }
+                $password = $request->getUserVar('password') ? $request->getUserVar('password') : base64_encode(random_bytes(10));
                 $user->setDateRegistered(Core::getCurrentDate());
                 $user->setInlineHelp(1); // default new users to having inline help visible.
-                $user->setPassword(Validation::encryptCredentials($row->username, $request->_requestVars["password"]));
-
+                $user->setPassword(Validation::encryptCredentials($row->username, $password));
                 Repo::user()->add($user);
                 $userId = $user->getId();
                 if (!$userId) {

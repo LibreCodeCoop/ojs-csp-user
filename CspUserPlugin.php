@@ -223,6 +223,12 @@ class CspUserPlugin extends GenericPlugin {
         $user = Repo::user()->get($args[0]->_user->getData('id'), true);
         $editUser->setData('gender', $user->getData('gender'));
         $editUser->setData('breed', $user->getData('breed'));
+
+        $currentLocale = Locale::getLocale();
+        $supportedLocales = Locale::getSupportedLocales();
+        foreach ($supportedLocales as $key => $value) {
+            $editUser->setData('affiliation', $form->_data["affiliation"][$currentLocale],  $key);
+        }
 	}
 
 	public function identityFormDisplay(string $hookName, array $args){
@@ -267,6 +273,13 @@ class CspUserPlugin extends GenericPlugin {
 		$editUser->setData('city', $user->getData('city'));
 		$editUser->setData('region', $user->getData('region'));
 		$editUser->setData('zipCode', $user->getData('zipCode'));
+
+        $currentLocale = Locale::getLocale();
+        $supportedLocales = Locale::getSupportedLocales();
+        foreach ($supportedLocales as $key => $value) {
+            $editUser->setData('givenName', $form->_data["givenName"][$currentLocale], $key);
+            $editUser->setData('familyName', $form->_data["familyName"][$currentLocale], $key);
+        }
 	}
 
     // Integração de login Sagas com OJS
@@ -306,17 +319,13 @@ class CspUserPlugin extends GenericPlugin {
 
             if($row){
                 $user = Repo::user()->newDataObject();
-                $currentLocale = Locale::getLocale();
                 $user->setUsername($row->username);
-                $user->setGivenName($row->givenName, $currentLocale);
                 $user->setEmail($row->email);
                 $user->setCountry($row->country);
-                $user->setAffiliation($row->instituicao1, $currentLocale);
-                $site = $request->getSite();
-                $sitePrimaryLocale = $site->getPrimaryLocale();
-                if ($sitePrimaryLocale != $currentLocale) {
-                    $user->setGivenName($row->givenName, $sitePrimaryLocale);
-                    $user->setAffiliation($row->instituicao1, $sitePrimaryLocale);
+                $supportedLocales = Locale::getSupportedLocales();
+                foreach ($supportedLocales as $key => $value) {
+                    $user->setGivenName($row->givenName, $key);
+                    $user->setAffiliation($row->instituicao1, $key);
                 }
                 $password = $request->getUserVar('password') ? $request->getUserVar('password') : base64_encode(random_bytes(10));
                 $user->setDateRegistered(Core::getCurrentDate());

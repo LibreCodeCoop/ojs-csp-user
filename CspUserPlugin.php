@@ -239,7 +239,6 @@ class CspUserPlugin extends GenericPlugin {
 	}
 
 	public function identityFormDisplay(string $hookName, array $args){
-        $form = &$args[0];
         $request = Application::get()->getRequest();
         $templateMgr = TemplateManager::getManager($request);
 
@@ -255,11 +254,17 @@ class CspUserPlugin extends GenericPlugin {
         $breeds['preta'] = __('plugins.themes.csp.user.breed.preta');
 
         $user = Repo::user()->get($args[0]->_user->getData('id'), true);
+        if ($user->getData('orcid') == "") {
+            $orcidNotification = '<div class="pkpNotification pkpNotification--warning">
+                                    <h2>Favor preencher o seu Orcid na aba "Público"!</h2>
+                                </div><br>';
+        }
         $templateMgr->assign([
             'genders' => $genders,
             'gender' => $user->getData('gender'),
             'breeds' => $breeds,
             'breed' => $user->getData('breed'),
+            'orcidNotification' => $orcidNotification,
         ]);
 	}
 

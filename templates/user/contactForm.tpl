@@ -39,7 +39,7 @@
 		{fbvElement type="text" name="city" id="city" rich=true value=$city required="true"}
 	{/fbvFormSection}
 	{fbvFormSection title="plugins.themes.csp.user.region" size=$fbvStyles.size.LARGE required=false}
-		{fbvElement type="text" name="state" id="state" rich=true value=$state required=false}
+		{fbvElement type="text" name="region" id="region" rich=true value=$region required=false}
 	{/fbvFormSection}
 	{fbvFormSection title="plugins.themes.csp.user.zip.code" size=$fbvStyles.size.LARGE required=false}
 		{fbvElement type="text" name="zipCode" id="zipCode" rich=true value=$zipCode required=false}
@@ -48,7 +48,7 @@
 		{fbvElement type="select" name="country" id="country" required=true defaultLabel="" defaultValue="" from=$countries selected=$country translate=false}
 	{/fbvFormSection}
 	{fbvFormSection title="user.signature" size=$fbvStyles.size.LARGE}
-		{fbvElement type="textarea" name="signature" id="signature" value=$signature rich=true}
+		{fbvElement type="textarea" multilingual="true" name="signature" id="signature" value=$signature rich=true}
 	{/fbvFormSection}
 	{if count($availableLocales) > 1}
 		{fbvFormSection title="user.workingLanguages" list=true}

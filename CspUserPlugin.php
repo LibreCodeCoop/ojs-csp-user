@@ -291,7 +291,6 @@ class CspUserPlugin extends GenericPlugin {
                 'login AS username',
                 'p.email',
                 'p.telefone AS phone',
-                'p.pais AS country',
                 'p.orcid AS orcid',
                 'p.nome AS givenName',
                 'p.idioma',
@@ -321,7 +320,15 @@ class CspUserPlugin extends GenericPlugin {
                 $user = Repo::user()->newDataObject();
                 $user->setUsername($row->username);
                 $user->setEmail($row->email);
-                $user->setCountry($row->country);
+                $user->setPhone($row->phone);
+                $user->setOrcid($row->orcid);
+                $user->setUrl($row->lattes);
+                $user->setData('zipCode',$row->cep);
+                $user->setData('city',$row->cidade);
+                $user->setData('region',$row->estado);
+                $user->setData('affiliation2',$row->instituicao2);
+                $user->setData('mailingAddress',$row->endereco);
+                $user->setData('gender',$row->sexo);
                 $supportedLocales = Locale::getSupportedLocales();
                 foreach ($supportedLocales as $key => $value) {
                     $user->setGivenName($row->givenName, $key);

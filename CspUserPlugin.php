@@ -188,6 +188,13 @@ class CspUserPlugin extends GenericPlugin {
 		$newUser->setData('zipCode', $form->getData('zipCode'));
 		$newUser->setData('orcid', $form->getData('orcid'));
 
+        $supportedLocales = Locale::getSupportedLocales();
+        foreach ($supportedLocales as $key => $value) {
+            $newUser->setData('affiliation', $form->getData('affiliation'), $key);
+            $newUser->setData('givenName', $form->getData('givenName'), $key);
+            $newUser->setData('familyName', $form->getData('familyName'), $key);
+        }
+
         $request = Application::get()->getRequest();
         $reviewerGroup = Repo::userGroup()->getByRoleIds([Role::ROLE_ID_REVIEWER], $request->getContext()->getId(), true)->first()->getId();
         $readerGroup = Repo::userGroup()->getByRoleIds([Role::ROLE_ID_READER], $request->getContext()->getId(), true)->first()->getId();

@@ -332,7 +332,7 @@ class CspUserPlugin extends GenericPlugin {
                 $user = Repo::user()->newDataObject();
                 $user->setUsername($row->username);
                 $user->setEmail($row->email);
-                $user->setPhone($row->phone);
+                // $user->setPhone($row->phone);
                 $user->setOrcid($row->orcid);
                 $user->setUrl($row->lattes);
                 $user->setData('zipCode',$row->cep);

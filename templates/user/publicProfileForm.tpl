@@ -55,7 +55,7 @@
 		{include file="controllers/fileUploadContainer.tpl" id="plupload"}
 	{/fbvFormSection}
 
-	{fbvFormSection title="user.biography" size=$fbvStyles.size.LARGE}
+	{fbvFormSection title="plugins.themes.csp.user.biography" size=$fbvStyles.size.LARGE}
 		{fbvElement type="textarea" multilingual="true" name="biography" id="biography" rich=true value=$biography}
 	{/fbvFormSection}
 	{fbvFormSection title="user.url" size=$fbvStyles.size.LARGE}

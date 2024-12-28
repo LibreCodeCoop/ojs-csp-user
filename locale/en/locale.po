@@ -53,3 +53,9 @@ msgstr "Brown"
 
 msgid "plugins.themes.csp.user.breed.preta"
 msgstr "Black"
+
+msgid "plugins.themes.csp.user.interests"
+msgstr "Interests"
+
+msgid "plugins.themes.csp.user.biography"
+msgstr "Biography"

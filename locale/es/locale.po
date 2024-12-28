@@ -53,3 +53,9 @@ msgstr "Pardo"
 
 msgid "plugins.themes.csp.user.breed.preta"
 msgstr "Preta"
+
+msgid "plugins.themes.csp.user.interests"
+msgstr "Interesses"
+
+msgid "plugins.themes.csp.user.biography"
+msgstr "Bigrafia"
